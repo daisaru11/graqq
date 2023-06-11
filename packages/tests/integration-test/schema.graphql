@@ -1,0 +1,95 @@
+type ObjectA {
+  nullableString: String
+  nonNullString: String!
+  nullableInt: Int
+  nonNullInt: Int!
+  nullableFloat: Float
+  nonNullFloat: Float!
+  nullableBoolean: Boolean
+  nonNullBoolean: Boolean!
+  nullableEnum: EnumA
+  nonNullEnum: EnumA!
+  nullableObject: ObjectB
+  nonNullObject: ObjectB!
+  nullableStringNullableArray: [String]
+  nullableStringNonNullArray: [String]!
+  nonNullStringNullableArray: [String!]
+  nonNullStringNonNullArray: [String!]!
+  nullableEnumNullableArray: [EnumA]
+  nullableEnumNonNullArray: [EnumA]!
+  nonNullEnumNullableArray: [EnumA!]
+  nonNullEnumNonNullArray: [EnumA!]!
+  nullableObjectNullableArray: [ObjectB]
+  nullableObjectNonNullArray: [ObjectB]!
+  nonNullObjectNullableArray: [ObjectB!]
+  nonNullObjectNonNullArray: [ObjectB!]!
+  nullableUnion: UnionBC
+  nonNullUnion: UnionBC!
+}
+
+type ObjectB {
+  field1: String
+  field2: Int!
+  field3: Boolean
+  unionSharedField1: String
+}
+
+type ObjectC {
+  fieldA: String
+  fieldB: Int!
+  fieldC: Boolean
+  unionSharedField1: String
+}
+
+union UnionBC = ObjectB | ObjectC
+
+input InputObjectC {
+  field1: Float!
+  field2: Int
+  field3: String!
+  field4: EnumA!
+}
+
+enum EnumA {
+  E1
+  E2
+  E3
+}
+
+type Query {
+  query: ObjectA!
+  queryWithNonNullStringArg(arg: String!): ObjectB!
+  queryWithNullableStringArg(arg: String): ObjectB!
+  queryWithNonNullInputObjectArg(arg: InputObjectC!): ObjectB!
+  queryWithNullableInputObjectArg(arg: InputObjectC): ObjectB!
+}
+
+type Mutation {
+  mutation: ObjectA!
+  mutationWithNonNullStringArg(arg: String!): ObjectB!
+  mutationWithNullableStringArg(arg: String): ObjectB!
+  mutationWithNonNullInputObjectArg(arg: InputObjectC!): ObjectB!
+  mutationWithNullableInputObjectArg(arg: InputObjectC): ObjectB!
+  mutationWithNullableStringNullableArrayArg(arg: [String]): ObjectB!
+  mutationWithNullableStringNonNullArrayArg(arg: [String]!): ObjectB!
+  mutationWithNonNullStringNullableArrayArg(arg: [String!]): ObjectB!
+  mutationWithNonNullStringNonNullArrayArg(arg: [String!]!): ObjectB!
+  mutationWithNullableInputObjectNullableArrayArg(arg: [InputObjectC]): ObjectB!
+  mutationWithNullableInputObjectNonNullArrayArg(arg: [InputObjectC]!): ObjectB!
+  mutationWithNonNullInputObjectNullableArrayArg(arg: [InputObjectC!]): ObjectB!
+  mutationWithNonNullInputObjectNonNullArrayArg(arg: [InputObjectC!]!): ObjectB!
+  mutationWithMultipleArgs(
+    arg1: String!
+    arg2: String
+    arg3: InputObjectC!
+    arg4: InputObjectC
+    arg5: [String]
+    arg6: [String]!
+    arg7: [String!]
+    arg8: [String!]!
+    arg9: [InputObjectC]
+    arg10: [InputObjectC]!
+    arg11: [InputObjectC!]
+    arg12: [InputObjectC!]! 
+  ): ObjectA!
+}

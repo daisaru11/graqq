@@ -1,0 +1,4 @@
+*.gen.ts
+dist
+
+/packages/cli/src/_test/test.ts

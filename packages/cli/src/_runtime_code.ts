@@ -1,0 +1,92 @@
+import {
+  buildOperationDocumentNode,
+  type MapGraphQLType,
+  type MapVariablesType,
+  type TypedDocumentNode,
+  type Variables,
+} from "@graqq/core";
+
+/* DELETE_START */
+// Fake types to make this file buildable
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type QueryObjectTypes<V extends string = never> = {
+  Query: {};
+  Mutation: {};
+};
+export type GraphQLInputObjectTypes = {};
+
+type Query = {};
+type Mutation = {};
+export type GraphQLObjectTypes = {
+  Query: Query;
+  Mutation: Mutation;
+};
+
+export const TypeMap = {
+  Query: {},
+  Mutation: {},
+};
+/* DELETE_END */
+
+type Subset<T, U> = {
+  [K in keyof T]: K extends keyof U ? T[K] : never;
+};
+
+export const $q = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
+  operationName: string,
+  variables?: VR,
+) => {
+  const context = {
+    typeMap: TypeMap,
+    variables,
+  };
+
+  type QueryType = QueryObjectTypes<Extract<keyof VR, string>>["Query"];
+  type QueryWithVariableContext = <Q extends QueryType>(
+    query: Subset<Q, QueryType>,
+  ) => TypedDocumentNode<
+    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Query"], Q>,
+    MapVariablesType<GraphQLInputObjectTypes, VR>
+  >;
+
+  return buildOperationDocumentNode(
+    operationName,
+    "query",
+    context,
+  ) as QueryWithVariableContext;
+};
+
+export const $m = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
+  operationName: string,
+  variables?: VR,
+) => {
+  const context = {
+    typeMap: TypeMap,
+    variables,
+  };
+
+  type MutationType = QueryObjectTypes<Extract<keyof VR, string>>["Mutation"];
+  type MutationWithVariableContext = <Q extends MutationType>(
+    mutation: Subset<Q, MutationType>,
+  ) => TypedDocumentNode<
+    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Mutation"], Q>,
+    MapVariablesType<GraphQLInputObjectTypes, VR>
+  >;
+
+  return buildOperationDocumentNode(
+    operationName,
+    "mutation",
+    context,
+  ) as MutationWithVariableContext;
+};
+
+export type InferFields<Q extends { $type: keyof QueryObjectTypes }> =
+  MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes[Q["$type"]], Q>;
+
+export const $fieldsOf = <K extends keyof QueryObjectTypes>(objectType: K) => {
+  type FieldType = QueryObjectTypes<any>[K];
+  return <Q extends FieldType>(fields: Subset<Q, FieldType>) => ({
+    ...fields,
+    $type: objectType,
+  });
+};

@@ -1,0 +1,21 @@
+name: Publish Package to npmjs
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: 'package.json'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@graqq'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm -F '@graqq/*' build
+      - run: pnpm release:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

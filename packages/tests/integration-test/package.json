@@ -1,0 +1,27 @@
+{
+  "name": "@graqq/tests-integration-test",
+  "version": "0.3.0",
+  "private": true,
+  "author": "daisaru11 <daisaru11@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "generate": "graqq -s schema.graphql -o src/graqq.gen.ts",
+    "test": "pnpm generate && run-s test:*",
+    "test:build": "tsc",
+    "test:runtime": "vitest run"
+  },
+  "devDependencies": {
+    "@graqq/cli": "workspace:^",
+    "@graqq/testutil": "workspace:^",
+    "@types/node": "^20.3.1",
+    "npm-run-all": "^4.1.5",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.3",
+    "vitest": "^0.33.0"
+  },
+  "dependencies": {
+    "@graqq/core": "workspace:^",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "graphql": "^16.6.0"
+  }
+}
