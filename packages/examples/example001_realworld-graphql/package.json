@@ -1,6 +1,6 @@
 {
   "name": "@graqq/example001",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "author": "daisaru11 <daisaru11@gmail.com>",
   "license": "MIT",
@@ -20,8 +20,8 @@
     "vitest": "^0.33.0"
   },
   "dependencies": {
-    "@graqq/core": "workspace:^",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@graqq/core": "workspace:^",
     "graphql": "^16.6.0"
   }
 }
