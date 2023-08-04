@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint --ext .ts,.js .",
     "lint:fix": "eslint --ext .ts,.js --fix .",
-    "release:version": "lerna version",
+    "release:version": "lerna version --no-push --force-publish",
     "release:publish": "pnpm publish -r --access=public",
     "prepare": "husky install"
   },
