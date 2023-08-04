@@ -9,8 +9,8 @@
 ## Quick Start
 
 ```
-npm install -D @graqq/cli
-npm install @graqq/core
+npm i -D @graqq/cli
+npm i @graqq/core
 
 npx graqq -s schema.graphql -o src/graqq.gen.ts
 ```
@@ -22,8 +22,8 @@ import { useQuery } from '@apollo/client';
 const VIEWER_QUERY = $q("Viewer")({
   viewer: {
     user: {
-      id: true
-      bio: true
+      id: true,
+      bio: true,
     }
   }
 })
