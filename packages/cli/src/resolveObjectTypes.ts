@@ -36,6 +36,13 @@ type Context = {
   scalars: ScalarsConfig;
 };
 
+/**
+ * Constructs Object types from GraphQL types.
+ *
+ * @param gqlObjectTypes
+ * @param context
+ * @returns list of Object type nodes
+ */
 export const resolveObjectTypes = (
   gqlObjectTypes: GraphQLNamedType[],
   context?: Context,
@@ -69,6 +76,13 @@ export const resolveObjectTypes = (
   return [...enumConstDeclarations, ...objectTypes, aggregatedType];
 };
 
+/**
+ * Constructs InputObject types from GraphQL types.
+ *
+ * @param gqlObjectTypes
+ * @param context
+ * @returns list of InputObject type nodes
+ */
 export const resolveInputObjectTypes = (
   gqlObjectTypes: GraphQLNamedType[],
   context?: Context,

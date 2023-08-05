@@ -24,7 +24,12 @@ import { logger } from "./logger";
 
 const LOG_LABEL = "TYPE_MAP_RESOLVER";
 
-// generate type mapping for runtime
+/**
+ * Generate type information referred at runtime.
+ *
+ * @param gqlObjectTypes
+ * @returns variable declarations that include type information
+ */
 export const resolveTypeMap = (gqlObjectTypes: GraphQLNamedType[]): Node[] => {
   logger.debug(`${LOG_LABEL}: start resolving typeMap`);
 

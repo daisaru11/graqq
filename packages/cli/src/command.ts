@@ -10,6 +10,11 @@ import { logger } from "./logger";
 
 type CommandError = { error: string };
 
+/**
+ * The entry point of the CLI.
+ *
+ * @returns null if success, otherwise error message
+ */
 export const run = async (): Promise<CommandError | null> => {
   const argv = await yargs(process.argv.slice(2))
     .options({

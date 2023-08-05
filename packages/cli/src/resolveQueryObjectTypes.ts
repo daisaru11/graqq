@@ -22,6 +22,12 @@ import { unwrapType } from "./gqlUtils";
 import { resolveValueType } from "./resolveObjectTypes";
 import { wrapType } from "./tsUtils";
 
+/**
+ * Construct type declarations for QueryObject types.
+ *
+ * @param gqlObjectTypes
+ * @returns list of QueryObject type declarations
+ */
 export const resolveQueryObjectTypes = (
   gqlObjectTypes: GraphQLNamedType[],
 ): Node[] => {

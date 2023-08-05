@@ -18,6 +18,12 @@ type GenerateInput = {
   scalars: ScalarsConfig;
 };
 
+/**
+ * Generates a code from a GraphQL schema.
+ *
+ * @param input
+ * @returns a generated code
+ */
 export const generate = async ({
   schema,
   scalars,
