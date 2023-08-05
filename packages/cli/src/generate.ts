@@ -1,6 +1,6 @@
-import * as ts from "typescript";
-
+import { Eta } from "eta";
 import { type GraphQLSchema } from "graphql";
+import * as ts from "typescript";
 
 import {
   resolveInputObjectTypes,
@@ -8,7 +8,6 @@ import {
 } from "./resolveObjectTypes";
 import { resolveQueryObjectTypes } from "./resolveQueryObjectTypes";
 
-import * as fs from "fs";
 import * as path from "path";
 import { type ScalarsConfig } from "./config";
 import { resolveTypeMap } from "./resolveTypeMap";
@@ -56,16 +55,8 @@ export const generate = async ({
     ),
   );
 
-  const runtimeCode = await getRuntimeCode();
+  const eta = new Eta({ views: path.join(__dirname, "_templates") });
+  const rendered = eta.render("./main", { generatedTypes: output });
 
-  return `${runtimeCode}\n\n${output}`;
-};
-
-const getRuntimeCode = async (): Promise<string> => {
-  const filePath = path.resolve(__dirname, "../src/_runtime_code.ts");
-  const runtimeCodeBuf = await fs.promises.readFile(filePath);
-
-  return runtimeCodeBuf
-    .toString()
-    .replace(/\/\* DELETE_START.*DELETE_END \*\//ms, "");
+  return rendered;
 };

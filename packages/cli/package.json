@@ -5,13 +5,17 @@
   "author": "daisaru11 <daisaru11@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/daisaru11/graqq",
-  "keywords": ["graphql", "gql", "typescript"],
+  "keywords": [
+    "graphql",
+    "gql",
+    "typescript"
+  ],
   "bin": {
     "graqq": "bin/cli.js"
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsc"
+    "build": "tsc && cp -r src/_templates dist/"
   },
   "devDependencies": {
     "@types/node": "^20.3.1",
@@ -23,6 +27,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@graqq/core": "workspace:^",
     "cosmiconfig": "^8.2.0",
+    "eta": "^3.1.0",
     "graphql": "^16.6.0",
     "pino": "^8.14.1",
     "pino-pretty": "^10.1.0",

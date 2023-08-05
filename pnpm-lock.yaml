@@ -50,15 +50,18 @@ importers:
 
   packages/cli:
     dependencies:
-      '@graqq/core':
-        specifier: workspace:^
-        version: link:../core
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.6.0)
+      '@graqq/core':
+        specifier: workspace:^
+        version: link:../core
       cosmiconfig:
         specifier: ^8.2.0
         version: 8.2.0
+      eta:
+        specifier: ^3.1.0
+        version: 3.1.0
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -115,12 +118,12 @@ importers:
 
   packages/examples/example001_realworld-graphql:
     dependencies:
-      '@graqq/core':
-        specifier: workspace:^
-        version: link:../../core
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.6.0)
+      '@graqq/core':
+        specifier: workspace:^
+        version: link:../../core
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -149,12 +152,12 @@ importers:
 
   packages/tests/integration-test:
     dependencies:
-      '@graqq/core':
-        specifier: workspace:^
-        version: link:../../core
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.6.0)
+      '@graqq/core':
+        specifier: workspace:^
+        version: link:../../core
       graphql:
         specifier: ^16.6.0
         version: 16.6.0
@@ -2612,6 +2615,11 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /eta@3.1.0:
+    resolution: {integrity: sha512-my4rbVATtKt9P7oNH6NkynI2bMY081ak9mZfX5Hh2tZ0HHCMhhFKYh6KH9NyUTRMTgohYd2Pd8lA2b9IbR0WrA==}
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
