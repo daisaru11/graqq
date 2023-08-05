@@ -15,7 +15,15 @@ import {
 
 import { type Variables } from "./types";
 
-type QueryObject = Record<string, any>; // TODO
+type QueryObject = {
+  [fieldName: string]: QueryObject | boolean;
+} & {
+  $type?: string;
+} & {
+  $on?: Record<string, QueryObject>;
+} & {
+  $args?: Record<string, string | { value: unknown }>;
+};
 
 type FieldTypeDef = {
   type: string;
@@ -35,12 +43,20 @@ type Context<G> = {
   variables?: Variables<G>;
 };
 
+/**
+ * Build a GraphQL DocumentNode from a query object.
+ *
+ * @param operationName
+ * @param operationType
+ * @param context
+ * @returns a function that generates a GraphQL DocumentNode
+ */
 export const buildOperationDocumentNode = (
   operationName: string,
   operationType: "query" | "mutation",
   context: Context<any>,
 ) => {
-  return (query: QueryObject) => {
+  return (query: QueryObject): DocumentNode => {
     const { variables } = context;
     const queryNode: ExecutableDefinitionNode = {
       kind: Kind.OPERATION_DEFINITION,
@@ -68,12 +84,10 @@ export const buildOperationDocumentNode = (
       },
     };
 
-    const documentNode: DocumentNode = {
+    return {
       kind: Kind.DOCUMENT,
       definitions: [queryNode],
     };
-
-    return documentNode;
   };
 };
 
@@ -102,24 +116,26 @@ export const buildSelectionNodes = (
   let ret: SelectionNode[] = [];
 
   const { typeMap } = context;
-  const names = Object.keys(query).filter((k) => !k.startsWith("$"));
   const objectTypeMap = typeMap[typeMapObjectKey];
 
-  const nodes = names
-    .map((name) => {
-      const value = query[name];
+  const nodes = Object.entries(query)
+    .filter(([name]) => !name.startsWith("$"))
+    .map(([name, value]) => {
       const fieldTypeDef = objectTypeMap[name];
-      return buildFieldNode(name, value, fieldTypeDef, context);
+      return buildFieldNode(
+        name,
+        value as QueryObject | boolean,
+        fieldTypeDef,
+        context,
+      );
     })
     .filter((n): n is FieldNode => !(n == null));
 
   ret = [...ret, ...nodes];
 
-  if ("$on" in query) {
-    const objectTypes = Object.keys(query.$on);
-
-    const inlineFragmentNodes = objectTypes.map(
-      (objectType): InlineFragmentNode => {
+  if ("$on" in query && query.$on != null) {
+    const inlineFragmentNodes = Object.entries(query.$on).map(
+      ([objectType, objectQuery]): InlineFragmentNode => {
         return {
           kind: Kind.INLINE_FRAGMENT,
           typeCondition: {
@@ -131,11 +147,7 @@ export const buildSelectionNodes = (
           },
           selectionSet: {
             kind: Kind.SELECTION_SET,
-            selections: buildSelectionNodes(
-              query.$on[objectType],
-              context,
-              objectType,
-            ),
+            selections: buildSelectionNodes(objectQuery, context, objectType),
           },
         };
       },
@@ -153,7 +165,6 @@ const buildFieldNode = (
   fieldTypeDef: ObjectFieldTypeDef,
   context: Context<any>,
 ) => {
-  const { variables } = context;
   if (typeof value === "boolean") {
     if (value) {
       const node: FieldNode = {
@@ -169,46 +180,18 @@ const buildFieldNode = (
   }
 
   let argNodes: readonly ArgumentNode[] = [];
-  if ("$args" in value) {
+  if ("$args" in value && value.$args != null) {
     const args = value.$args;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const argsTypeMap = fieldTypeDef.$args!;
-    argNodes = Object.keys(args)
-      .map((k) => {
-        const arg = args[k];
-        const argTypeDef = argsTypeMap[k];
-        if (typeof arg === "string" && typeof variables?.[arg] === "string") {
-          return {
-            kind: Kind.ARGUMENT,
-            name: {
-              kind: Kind.NAME,
-              value: k,
-            },
-            value: {
-              kind: Kind.VARIABLE,
-              name: {
-                kind: Kind.NAME,
-                value: arg,
-              },
-            },
-          };
-        }
-        if ("value" in arg) {
-          const argValue = arg.value;
-          return {
-            kind: Kind.ARGUMENT,
-            name: {
-              kind: Kind.NAME,
-              value: k,
-            },
-            value: buildValueNode(argValue, argTypeDef, context),
-          };
-        }
-
-        return null;
+    argNodes = Object.entries(args)
+      .map(([argName, arg]) => {
+        const argTypeDef = argsTypeMap[argName];
+        return buildArgumentNode(argName, arg, argTypeDef, context);
       })
       .filter((a): a is ArgumentNode => !(a == null));
   }
+
   const node: FieldNode = {
     kind: Kind.FIELD,
     name: {
@@ -223,6 +206,46 @@ const buildFieldNode = (
   };
 
   return node;
+};
+
+const buildArgumentNode = (
+  name: string,
+  arg: string | { value: unknown },
+  argTypeDef: FieldTypeDef,
+  context: Context<any>,
+): ArgumentNode | null => {
+  const { variables } = context;
+  // case of a Variable
+  if (typeof arg === "string" && typeof variables?.[arg] === "string") {
+    return {
+      kind: Kind.ARGUMENT,
+      name: {
+        kind: Kind.NAME,
+        value: name,
+      },
+      value: {
+        kind: Kind.VARIABLE,
+        name: {
+          kind: Kind.NAME,
+          value: arg,
+        },
+      },
+    };
+  }
+  // case of a Value
+  if (typeof arg === "object" && "value" in arg) {
+    const argValue = arg.value;
+    return {
+      kind: Kind.ARGUMENT,
+      name: {
+        kind: Kind.NAME,
+        value: name,
+      },
+      value: buildValueNode(argValue, argTypeDef, context),
+    };
+  }
+
+  return null;
 };
 
 const buildValueNode = (
