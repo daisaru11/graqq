@@ -36,6 +36,8 @@ const { loading, data } = useQuery(VIEWER_QUERY);
 ### Query with literal value arguments
 
 ```TS
+import { $q } from "./graqq.gen";
+
 export const GET_ARTICLE = $q("GetArticle")({
   article: {
     $args: {
@@ -53,6 +55,8 @@ export const GET_ARTICLE = $q("GetArticle")({
 ### Query with variable arguments
 
 ```TS
+import { $q } from "./graqq.gen";
+
 export const GET_ARTICLE = $q("GetArticleBySlug", {
   articleSlug: "String!"
 })({
@@ -79,9 +83,9 @@ const { loading, data } = useQuery(GET_ARTICLE, {
 ### Mutation
 
 ```TS
-import { $q } from "./graqq.gen";
+import { $m } from "./graqq.gen";
 
-export const ADD_COMMENT = $m("AddComment",{
+export const ADD_COMMENT = $m("AddComment", {
   input: 'AddCommentInput!'
 })({
   addComment: {
@@ -113,7 +117,7 @@ export const commentFields = $fieldsOf("Comment")({
 type Comment = InferFields<typeof commentFields>; // Type inference
 
 export const CommentCard: React.FC<{comment: Comment}> = ({comment}) => (
-  <div>{comment.createdAt} - {comment.body}</div>
+  <div className="card">{comment.createdAt} - {comment.body}</div>
 )
 ```
 
@@ -138,7 +142,7 @@ export const GET_ARTICLE = $q("GetArticle")({
 
 // ... 
 
-{data.article.comments.map(comment => (<CommentCard comment={data.comment} />))}
+{data.article.comments.map(comment => (<CommentCard comment={comment} />))}
 ```
 
 ## Similar projects
