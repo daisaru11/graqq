@@ -1,11 +1,15 @@
 {
   "name": "@graqq/root",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "author": "daisaru11 <daisaru11@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/daisaru11/graqq",
-  "keywords": ["graphql", "gql", "typescript"],
+  "keywords": [
+    "graphql",
+    "gql",
+    "typescript"
+  ],
   "packageManager": "pnpm@8.6.3",
   "engines": {
     "node": "18.x"

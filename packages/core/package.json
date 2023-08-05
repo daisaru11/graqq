@@ -1,13 +1,17 @@
 {
   "name": "@graqq/core",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "author": "daisaru11 <daisaru11@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/daisaru11/graqq",
-  "keywords": ["graphql", "gql", "typescript"],
+  "keywords": [
+    "graphql",
+    "gql",
+    "typescript"
+  ],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsc"
