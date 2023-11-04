@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    rebase-strategy: 'disabled'
+    open-pull-requests-limit: 4
+    schedule:
+      interval: "weekly"
+
