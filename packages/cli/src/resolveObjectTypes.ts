@@ -30,8 +30,8 @@ import { type ScalarsConfig } from "./config";
 import { unwrapType } from "./gqlUtils";
 import { logger } from "./logger";
 import {
-  type InterfaceImplementsMap,
   resolveInterfaceImplementsMap,
+  type InterfaceImplementsMap,
 } from "./resolveInterfaceImplementsMap";
 import { wrapType } from "./tsUtils";
 
@@ -144,7 +144,7 @@ const resolveObjectType = (
         factory.createPropertySignature(
           undefined,
           factory.createIdentifier("__typename"),
-          factory.createToken(SyntaxKind.QuestionToken),
+          undefined,
           factory.createLiteralTypeNode(
             factory.createStringLiteral(gqlObjectType.name),
           ),

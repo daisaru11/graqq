@@ -92,6 +92,12 @@ export const resolveQueryObjectType = (
             factory.createStringLiteral(gqlObjectType.name),
           ),
         ),
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
+        ),
         ...fieldDeclarations,
       ]),
     );
@@ -107,6 +113,12 @@ export const resolveQueryObjectType = (
       factory.createIdentifier(gqlObjectType.name),
       undefined,
       factory.createTypeLiteralNode([
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
+        ),
         factory.createPropertySignature(
           undefined,
           factory.createIdentifier("$on"),
@@ -154,6 +166,12 @@ export const resolveQueryObjectType = (
           factory.createLiteralTypeNode(
             factory.createStringLiteral(gqlObjectType.name),
           ),
+        ),
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
         ),
         factory.createPropertySignature(
           undefined,

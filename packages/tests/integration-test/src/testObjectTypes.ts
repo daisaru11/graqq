@@ -2,9 +2,9 @@
 import type { Assert } from "@graqq/testutil";
 
 import {
-  type InterfaceD,
   type EnumA,
   type InputObjectC,
+  type InterfaceD,
   type ObjectA,
   type ObjectB,
   type UnionBC,
@@ -13,7 +13,7 @@ import {
 const testObjectType: Assert<
   ObjectA,
   {
-    __typename?: "ObjectA";
+    __typename: "ObjectA";
     nullableString: string | null;
     nonNullString: string;
     nullableInt: number | null;

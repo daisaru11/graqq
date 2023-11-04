@@ -6,6 +6,7 @@ import { $q } from "../graqq.gen";
 export const query = $q("TestQuery")({
   query: {
     nullableUnion: {
+      __typename: true,
       $on: {
         ObjectB: {
           field1: true,
@@ -16,6 +17,7 @@ export const query = $q("TestQuery")({
       },
     },
     nonNullUnion: {
+      __typename: true,
       $on: {
         ObjectB: {
           field2: true,
@@ -34,17 +36,21 @@ const testResultType: Assert<
     query: {
       nullableUnion:
         | {
+            __typename: "ObjectB";
             field1: string | null;
           }
         | {
+            __typename: "ObjectC";
             fieldA: string | null;
           }
         | null;
       nonNullUnion:
         | {
+            __typename: "ObjectB";
             field2: number;
           }
         | {
+            __typename: "ObjectC";
             fieldB: number;
           };
     };
@@ -55,6 +61,7 @@ export const expectedQuery = `\
 query TestQuery {
   query {
     nullableUnion {
+      __typename
       ... on ObjectB {
         field1
       }
@@ -63,6 +70,7 @@ query TestQuery {
       }
     }
     nonNullUnion {
+      __typename
       ... on ObjectB {
         field2
       }
