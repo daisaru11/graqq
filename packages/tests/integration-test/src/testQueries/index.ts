@@ -4,6 +4,7 @@ import * as objectFields from "./0030_objectFields";
 import * as objectFieldsWithFieldsOf from "./0031_objectFieldsWithFieldsOf";
 import * as arrayFields from "./0040_arrayFields";
 import * as unionFields from "./0050_unionFields";
+import * as interfaceFields from "./0060_interfaceFields";
 import * as withNonLiteralBoolean from "./0100_withNonLiteralBoolean";
 import * as withFalseLiteral from "./0110_withFalseLiteral";
 import * as nonNullVariable from "./0200_nonNullVariable";
@@ -18,6 +19,7 @@ export const testCases = {
   objectFieldsWithFieldsOf,
   arrayFields,
   unionFields,
+  interfaceFields,
   withNonLiteralBoolean,
   withFalseLiteral,
   nonNullVariable,

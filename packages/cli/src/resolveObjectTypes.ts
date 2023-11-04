@@ -13,6 +13,7 @@ import {
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
+  GraphQLInterfaceType,
   GraphQLList,
   GraphQLObjectType,
   GraphQLScalarType,
@@ -28,6 +29,10 @@ import {
 import { type ScalarsConfig } from "./config";
 import { unwrapType } from "./gqlUtils";
 import { logger } from "./logger";
+import {
+  type InterfaceImplementsMap,
+  resolveInterfaceImplementsMap,
+} from "./resolveInterfaceImplementsMap";
 import { wrapType } from "./tsUtils";
 
 const LOG_LABEL = "OBJECT_TYPES_RESOLVER";
@@ -49,12 +54,14 @@ export const resolveObjectTypes = (
 ): Node[] => {
   logger.debug(`${LOG_LABEL}: start resolving object types`);
 
+  const interfaceImplementsMap = resolveInterfaceImplementsMap(gqlObjectTypes);
+
   const enumConstDeclarations = gqlObjectTypes
     .map((t) => resolveEnumConst(t, context))
     .filter((r): r is VariableStatement => !(r == null));
 
   const objectTypes = gqlObjectTypes
-    .map((t) => resolveObjectType(t, context))
+    .map((t) => resolveObjectType(t, interfaceImplementsMap, context))
     .filter((r): r is TypeAliasDeclaration => !(r == null));
 
   const aggregatedType = factory.createTypeAliasDeclaration(
@@ -114,6 +121,7 @@ export const resolveInputObjectTypes = (
 
 const resolveObjectType = (
   gqlObjectType: GraphQLNamedType,
+  interfaceImplementsMap: InterfaceImplementsMap,
   context?: Context,
 ): TypeAliasDeclaration | null => {
   if (gqlObjectType instanceof GraphQLObjectType) {
@@ -170,6 +178,23 @@ const resolveObjectType = (
         gqlObjectType
           .getTypes()
           .map((t) => factory.createTypeReferenceNode(t.name)),
+      ),
+    );
+  }
+
+  if (gqlObjectType instanceof GraphQLInterfaceType) {
+    logger.debug(
+      `${LOG_LABEL}: \tObjectType(Interface): ${gqlObjectType.name}`,
+    );
+
+    return factory.createTypeAliasDeclaration(
+      [factory.createModifier(SyntaxKind.ExportKeyword)],
+      factory.createIdentifier(gqlObjectType.name),
+      undefined,
+      factory.createUnionTypeNode(
+        interfaceImplementsMap[gqlObjectType.name]?.map((t) =>
+          factory.createTypeReferenceNode(t.name),
+        ),
       ),
     );
   }
@@ -298,6 +323,10 @@ export const resolveValueType = (
   }
 
   if (gqlFieldValueType instanceof GraphQLUnionType) {
+    return factory.createTypeReferenceNode(gqlFieldValueType.name);
+  }
+
+  if (gqlFieldValueType instanceof GraphQLInterfaceType) {
     return factory.createTypeReferenceNode(gqlFieldValueType.name);
   }
 

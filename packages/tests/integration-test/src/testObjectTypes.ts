@@ -2,6 +2,7 @@
 import type { Assert } from "@graqq/testutil";
 
 import {
+  type InterfaceD,
   type EnumA,
   type InputObjectC,
   type ObjectA,
@@ -39,6 +40,8 @@ const testObjectType: Assert<
     nonNullObjectNonNullArray: ObjectB[];
     nullableUnion: UnionBC | null;
     nonNullUnion: UnionBC;
+    nullableInterface: InterfaceD | null;
+    nonNullInterface: InterfaceD;
   }
 > = true;
 

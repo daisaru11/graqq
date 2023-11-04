@@ -25,6 +25,8 @@ type ObjectA {
   nonNullObjectNonNullArray: [ObjectB!]!
   nullableUnion: UnionBC
   nonNullUnion: UnionBC!
+  nullableInterface: InterfaceD
+  nonNullInterface: InterfaceD!
 }
 
 type ObjectB {
@@ -42,6 +44,27 @@ type ObjectC {
 }
 
 union UnionBC = ObjectB | ObjectC
+
+interface InterfaceD {
+  field1: String
+  field2: Int!
+  field3: ObjectB
+}
+
+type ObjectE implements InterfaceD {
+  field1: String
+  field2: Int!
+  field3: ObjectB
+  field4: Boolean!
+}
+
+type ObjectF implements InterfaceD {
+  field1: String
+  field2: Int!
+  field3: ObjectB
+  field4: Float
+  field5: String!
+}
 
 input InputObjectC {
   field1: Float!
