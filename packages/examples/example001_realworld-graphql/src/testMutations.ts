@@ -31,7 +31,9 @@ const testMutationSimple0ResultType: Assert<
   ResultMutationSimple0,
   {
     addComment: {
+      __typename: "AddCommentPayload";
       comment: {
+        __typename: "Comment";
         id: string;
         body: string;
       } | null;
@@ -62,7 +64,9 @@ const testMutationWithArgs0ResultType: Assert<
   ResultMutationWithArgs0,
   {
     addComment: {
+      __typename: "AddCommentPayload";
       comment: {
+        __typename: "Comment";
         id: string;
         body: string;
       } | null;

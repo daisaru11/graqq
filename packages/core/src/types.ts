@@ -151,3 +151,23 @@ type MapScalarStringToType<S extends string> = S extends "String"
   : never;
 
 export type Variables<G> = Record<string, VariableExpressions<G>>;
+
+export type AddTypenameRecursive<T> = Simplify<
+  ApplyAddTypenameRecursiveToFields<T> & { __typename: true }
+>;
+
+export type ApplyAddTypenameRecursiveToFields<T> = {
+  [K in keyof T]: T[K] extends boolean
+    ? T[K]
+    : K extends "$args" | "$type"
+    ? T[K]
+    : K extends "$on"
+    ? Simplify<ApplyTypenameRecursiveToUnionTypes<T[K]>>
+    : Simplify<AddTypenameRecursive<T[K]>>;
+};
+
+type ApplyTypenameRecursiveToUnionTypes<UNION_TYPES> = {
+  [TYPE_NAME in keyof UNION_TYPES]: Simplify<
+    ApplyAddTypenameRecursiveToFields<UNION_TYPES[TYPE_NAME]>
+  >;
+};

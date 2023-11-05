@@ -14,7 +14,9 @@ type Article = InferFields<typeof articleFields>;
 const testArticleType: Assert<
   Article,
   {
+    __typename: "Article";
     author: {
+      __typename: "User";
       id: string;
     } | null;
     body: string;

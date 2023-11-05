@@ -24,7 +24,9 @@ const testQuerySimple0ResultType: Assert<
   ResultQuerySimple0,
   {
     viewer: {
+      __typename: "Viewer";
       user: {
+        __typename: "User";
         id: string;
         bio: string | null;
       };
@@ -64,10 +66,14 @@ const testQueryWithArgs0ResultType: Assert<
   ResultQueryWithArgs0,
   {
     user: {
+      __typename: "User";
       id: string;
       favoriteArticles: {
+        __typename: "ArticleConnection";
         edges: Array<{
+          __typename: "ArticleEdge";
           node: {
+            __typename: "Article";
             id: string;
             title: string;
             createdAt: string;

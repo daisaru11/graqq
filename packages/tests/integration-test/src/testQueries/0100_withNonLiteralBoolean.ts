@@ -13,6 +13,7 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nonNullString?: string;
     };
   }
@@ -21,6 +22,7 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nonNullString
   }
 }`;

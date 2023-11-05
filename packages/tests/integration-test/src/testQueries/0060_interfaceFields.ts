@@ -36,18 +36,23 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableInterface: {
+        __typename: "ObjectE";
         field1: string | null;
         field2: number;
         field3: {
+          __typename: "ObjectB";
           field1: string | null;
         } | null;
         field4: boolean;
       } | null;
       nonNullInterface: {
+        __typename: "ObjectF";
         field1: string | null;
         field2: number;
         field3: {
+          __typename: "ObjectB";
           field1: string | null;
         } | null;
         field4: number | null;
@@ -59,10 +64,13 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableInterface {
+      __typename
       field1
       field2
       field3 {
+        __typename
         field1
       }
       ... on ObjectE {
@@ -70,9 +78,11 @@ query TestQuery {
       }
     }
     nonNullInterface {
+      __typename
       field1
       field2
       field3 {
+        __typename
         field1
       }
       ... on ObjectF {

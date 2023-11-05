@@ -16,10 +16,12 @@ export const query = $q("TestQuery")({
   },
 });
 
+type A = ResultOf<typeof query>;
 const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableString: string | null;
       nonNullString: string;
       nullableInt: number | null;
@@ -35,6 +37,7 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableString
     nonNullString
     nullableInt

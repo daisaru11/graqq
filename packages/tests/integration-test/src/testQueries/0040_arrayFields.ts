@@ -24,6 +24,7 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableStringNullableArray: Array<string | null> | null;
       nullableStringNonNullArray: Array<string | null>;
       nonNullStringNullableArray: string[] | null;
@@ -33,18 +34,22 @@ const testResultType: Assert<
       nonNullEnumNullableArray: EnumA[] | null;
       nonNullEnumNonNullArray: EnumA[];
       nullableObjectNullableArray: Array<{
+        __typename: "ObjectB";
         field1: string | null;
         field2: number;
       } | null> | null;
       nullableObjectNonNullArray: Array<{
+        __typename: "ObjectB";
         field1: string | null;
         field2: number;
       } | null>;
       nonNullObjectNullableArray: Array<{
+        __typename: "ObjectB";
         field1: string | null;
         field2: number;
       }> | null;
       nonNullObjectNonNullArray: Array<{
+        __typename: "ObjectB";
         field1: string | null;
         field2: number;
       }>;
@@ -55,6 +60,7 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableStringNullableArray
     nullableStringNonNullArray
     nonNullStringNullableArray
@@ -64,18 +70,22 @@ query TestQuery {
     nonNullEnumNullableArray
     nonNullEnumNonNullArray
     nullableObjectNullableArray {
+      __typename
       field1
       field2
     }
     nullableObjectNonNullArray {
+      __typename
       field1
       field2
     }
     nonNullObjectNullableArray {
+      __typename
       field1
       field2
     }
     nonNullObjectNonNullArray {
+      __typename
       field1
       field2
     }

@@ -18,10 +18,13 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableObject: {
+        __typename: "ObjectB";
         field1: string | null;
       } | null;
       nonNullObject: {
+        __typename: "ObjectB";
         field1: string | null;
       };
     };
@@ -31,10 +34,13 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableObject {
+      __typename
       field1
     }
     nonNullObject {
+      __typename
       field1
     }
   }

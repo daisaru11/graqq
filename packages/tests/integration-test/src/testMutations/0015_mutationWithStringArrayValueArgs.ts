@@ -18,6 +18,7 @@ const testResultType: Assert<
   ResultOf<typeof mutation>,
   {
     mutationWithNullableStringNullableArrayArg: {
+      __typename: "ObjectB";
       field1: string | null;
     };
   }
@@ -26,6 +27,7 @@ const testResultType: Assert<
 export const expectedQuery = `\
 mutation TestMutation {
   mutationWithNullableStringNullableArrayArg(arg: ["test1", "test2"]) {
+    __typename
     field1
   }
 }`;

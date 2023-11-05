@@ -43,12 +43,12 @@ const testResultType: Assert<
   ResultOf<typeof mutation>,
   {
     mutationWithMultipleArgs: {
+      __typename: "ObjectA";
       nullableString: string | null;
     };
   }
 > = true;
 
-type A = VariablesOf<typeof mutation>;
 const testVariablesType: Assert<
   VariablesOf<typeof mutation>,
   {
@@ -83,6 +83,7 @@ mutation TestMutation($testArg1: String!, $testArg2: String, $testArg3: InputObj
     arg11: $testArg11
     arg12: $testArg12
   ) {
+    __typename
     nullableString
   }
 }`;

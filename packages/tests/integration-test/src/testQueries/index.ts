@@ -1,4 +1,3 @@
-import * as typeNameFields from "./0000_typeNameFields";
 import * as scalarFields from "./0010_scalarFields";
 import * as enumField from "./0020_enumFields";
 import * as objectFields from "./0030_objectFields";
@@ -14,7 +13,6 @@ import * as nonNullObjectVariable from "./0210_nonNullObjectVariable";
 import * as nullableObjectVariable from "./0211_nullableObjectVariable";
 
 export const testCases = {
-  typeNameFields,
   scalarFields,
   enumField,
   objectFields,

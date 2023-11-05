@@ -20,7 +20,9 @@ describe("queries", async () => {
       expectedQuery: `\
 mutation AddComment {
   addComment(input: {articleId: "testId", body: "testBody"}) {
+    __typename
     comment {
+      __typename
       id
       body
     }
@@ -32,7 +34,9 @@ mutation AddComment {
       expectedQuery: `\
 mutation AddComment($input: AddCommentInput!) {
   addComment(input: $input) {
+    __typename
     comment {
+      __typename
       id
       body
     }
