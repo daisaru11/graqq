@@ -1,6 +1,6 @@
 {
   "name": "@graqq/cli",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "main": "dist/index.js",
   "author": "daisaru11 <daisaru11@gmail.com>",
   "license": "MIT",
