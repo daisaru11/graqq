@@ -1,9 +1,13 @@
 import {
+  addTypenameRecursive,
+  applyAddTypenameRecursiveToFields,
   buildOperationDocumentNode,
   type MapGraphQLType,
   type MapVariablesType,
   type TypedDocumentNode,
   type Variables,
+  type ApplyAddTypenameRecursiveToFields,
+  type AddTypenameRecursive,
 } from "@graqq/core";
 
 type Subset<T, U> = {
@@ -17,13 +21,14 @@ export const $q = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
   const context = {
     typeMap: TypeMap,
     variables,
+    addTypename: true,
   };
 
   type QueryType = QueryObjectTypes<Extract<keyof VR, string>>["Query"];
   type QueryWithVariableContext = <Q extends QueryType>(
     query: Subset<Q, QueryType>,
   ) => TypedDocumentNode<
-    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Query"], Q>,
+    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Query"], ApplyAddTypenameRecursiveToFields<Q>>,
     MapVariablesType<GraphQLInputObjectTypes, VR>
   >;
 
@@ -31,6 +36,7 @@ export const $q = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
     operationName,
     "query",
     context,
+    applyAddTypenameRecursiveToFields as any,
   ) as QueryWithVariableContext;
 };
 
@@ -41,13 +47,14 @@ export const $m = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
   const context = {
     typeMap: TypeMap,
     variables,
+    addTypename: true,
   };
 
   type MutationType = QueryObjectTypes<Extract<keyof VR, string>>["Mutation"];
   type MutationWithVariableContext = <Q extends MutationType>(
     mutation: Subset<Q, MutationType>,
   ) => TypedDocumentNode<
-    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Mutation"], Q>,
+    MapGraphQLType<GraphQLObjectTypes, GraphQLObjectTypes["Mutation"], ApplyAddTypenameRecursiveToFields<Q>>,
     MapVariablesType<GraphQLInputObjectTypes, VR>
   >;
 
@@ -55,6 +62,7 @@ export const $m = <VR extends Variables<GraphQLInputObjectTypes> = {}>(
     operationName,
     "mutation",
     context,
+    applyAddTypenameRecursiveToFields as any,
   ) as MutationWithVariableContext;
 };
 
@@ -64,7 +72,7 @@ export type InferFields<Q extends { $type: keyof QueryObjectTypes }> =
 export const $fieldsOf = <K extends keyof QueryObjectTypes>(objectType: K) => {
   type FieldType = QueryObjectTypes<any>[K];
   return <Q extends FieldType>(fields: Subset<Q, FieldType>) => ({
-    ...fields,
+    ...addTypenameRecursive(fields),
     $type: objectType,
   });
 };

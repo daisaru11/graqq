@@ -55,6 +55,7 @@ export const buildOperationDocumentNode = (
   operationName: string,
   operationType: "query" | "mutation",
   context: Context<any>,
+  queryProcessor?: (query: QueryObject) => QueryObject,
 ) => {
   return (query: QueryObject): DocumentNode => {
     const { variables } = context;
@@ -77,7 +78,7 @@ export const buildOperationDocumentNode = (
       selectionSet: {
         kind: Kind.SELECTION_SET,
         selections: buildSelectionNodes(
-          query,
+          queryProcessor != null ? queryProcessor(query) : query,
           context,
           operationType === "query" ? "Query" : "Mutation",
         ),
@@ -117,17 +118,15 @@ export const buildSelectionNodes = (
 
   const { typeMap } = context;
   const objectTypeMap = typeMap[typeMapObjectKey];
+  const fields = Object.entries(query) as Array<
+    [string, QueryObject | boolean]
+  >;
 
-  const nodes = Object.entries(query)
+  const nodes = fields
     .filter(([name]) => !name.startsWith("$"))
     .map(([name, value]) => {
       const fieldTypeDef = objectTypeMap[name];
-      return buildFieldNode(
-        name,
-        value as QueryObject | boolean,
-        fieldTypeDef,
-        context,
-      );
+      return buildFieldNode(name, value, fieldTypeDef, context);
     })
     .filter((n): n is FieldNode => !(n == null));
 

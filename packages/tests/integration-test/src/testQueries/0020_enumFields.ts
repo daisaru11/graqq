@@ -14,6 +14,7 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableEnum: EnumA | null;
       nonNullEnum: EnumA;
     };
@@ -23,6 +24,7 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableEnum
     nonNullEnum
   }

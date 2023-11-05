@@ -19,6 +19,7 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     queryWithNonNullInputObjectArg: {
+      __typename: "ObjectB";
       field1: string | null;
     };
   }
@@ -33,6 +34,7 @@ const testVariablesType: Assert<
 export const expectedQuery = `\
 query TestQuery($arg1: InputObjectC!) {
   queryWithNonNullInputObjectArg(arg: $arg1) {
+    __typename
     field1
   }
 }`;

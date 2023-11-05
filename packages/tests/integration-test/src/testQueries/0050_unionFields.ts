@@ -32,19 +32,24 @@ const testResultType: Assert<
   ResultOf<typeof query>,
   {
     query: {
+      __typename: "ObjectA";
       nullableUnion:
         | {
+            __typename: "ObjectB";
             field1: string | null;
           }
         | {
+            __typename: "ObjectC";
             fieldA: string | null;
           }
         | null;
       nonNullUnion:
         | {
+            __typename: "ObjectB";
             field2: number;
           }
         | {
+            __typename: "ObjectC";
             fieldB: number;
           };
     };
@@ -54,7 +59,9 @@ const testResultType: Assert<
 export const expectedQuery = `\
 query TestQuery {
   query {
+    __typename
     nullableUnion {
+      __typename
       ... on ObjectB {
         field1
       }
@@ -63,6 +70,7 @@ query TestQuery {
       }
     }
     nonNullUnion {
+      __typename
       ... on ObjectB {
         field2
       }

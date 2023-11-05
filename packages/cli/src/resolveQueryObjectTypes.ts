@@ -9,6 +9,7 @@ import {
 
 import {
   GraphQLEnumType,
+  GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
@@ -19,8 +20,15 @@ import {
 } from "graphql";
 
 import { unwrapType } from "./gqlUtils";
+import { logger } from "./logger";
+import {
+  resolveInterfaceImplementsMap,
+  type InterfaceImplementsMap,
+} from "./resolveInterfaceImplementsMap";
 import { resolveValueType } from "./resolveObjectTypes";
 import { wrapType } from "./tsUtils";
+
+const LOG_LABEL = "QUERY_OBJECT_TYPES_RESOLVER";
 
 /**
  * Construct type declarations for QueryObject types.
@@ -31,8 +39,11 @@ import { wrapType } from "./tsUtils";
 export const resolveQueryObjectTypes = (
   gqlObjectTypes: GraphQLNamedType[],
 ): Node[] => {
+  logger.debug(`${LOG_LABEL}: start resolving queryObject types`);
+
+  const interfaceImplementsMap = resolveInterfaceImplementsMap(gqlObjectTypes);
   const queryObjectTypes = gqlObjectTypes
-    .map(resolveQueryObjectType)
+    .map((o) => resolveQueryObjectType(o, interfaceImplementsMap))
     .filter((r): r is TypeElement => !(r == null));
 
   const aggregatedType = factory.createTypeAliasDeclaration(
@@ -54,8 +65,11 @@ export const resolveQueryObjectTypes = (
 
 export const resolveQueryObjectType = (
   gqlObjectType: GraphQLNamedType,
+  interfaceImplementsMap: InterfaceImplementsMap,
 ): TypeElement | null => {
   if (gqlObjectType instanceof GraphQLObjectType) {
+    logger.debug(`${LOG_LABEL}: \tObjectType: ${gqlObjectType.name}`);
+
     const fields: GraphQLFieldMap<
       string,
       GraphQLField<any, any>
@@ -78,6 +92,12 @@ export const resolveQueryObjectType = (
             factory.createStringLiteral(gqlObjectType.name),
           ),
         ),
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
+        ),
         ...fieldDeclarations,
       ]),
     );
@@ -86,11 +106,19 @@ export const resolveQueryObjectType = (
   }
 
   if (gqlObjectType instanceof GraphQLUnionType) {
+    logger.debug(`${LOG_LABEL}: \tObjectType(Union): ${gqlObjectType.name}`);
+
     return factory.createPropertySignature(
       undefined,
       factory.createIdentifier(gqlObjectType.name),
       undefined,
       factory.createTypeLiteralNode([
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
+        ),
         factory.createPropertySignature(
           undefined,
           factory.createIdentifier("$on"),
@@ -110,6 +138,63 @@ export const resolveQueryObjectType = (
         ),
       ]),
     );
+  }
+
+  if (gqlObjectType instanceof GraphQLInterfaceType) {
+    logger.debug(
+      `${LOG_LABEL}: \tObjectType(Interface): ${gqlObjectType.name}`,
+    );
+
+    const fields: GraphQLFieldMap<
+      string,
+      GraphQLField<any, any>
+    > = gqlObjectType.getFields();
+
+    const fieldDeclarations = Object.values(fields)
+      .map(resolveQueryFieldType)
+      .filter((r): r is TypeElement => !(r == null));
+
+    const queryObjectType = factory.createPropertySignature(
+      undefined,
+      factory.createIdentifier(gqlObjectType.name),
+      undefined,
+      factory.createTypeLiteralNode([
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("$type"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createLiteralTypeNode(
+            factory.createStringLiteral(gqlObjectType.name),
+          ),
+        ),
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("__typename"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeReferenceNode("boolean"),
+        ),
+        factory.createPropertySignature(
+          undefined,
+          factory.createIdentifier("$on"),
+          factory.createToken(SyntaxKind.QuestionToken),
+          factory.createTypeLiteralNode(
+            interfaceImplementsMap[gqlObjectType.name]?.map((t) => {
+              return factory.createPropertySignature(
+                undefined,
+                factory.createIdentifier(t.name),
+                factory.createToken(SyntaxKind.QuestionToken),
+                factory.createTypeReferenceNode(
+                  `QueryObjectTypes["${t.name}"]`,
+                ),
+              );
+            }),
+          ),
+        ),
+        ...fieldDeclarations,
+      ]),
+    );
+
+    return queryObjectType;
   }
 
   return null;
@@ -137,6 +222,11 @@ const resolveQueryFieldType = (
     );
   }
   if (gqlFieldValueType instanceof GraphQLUnionType) {
+    fieldType = factory.createTypeReferenceNode(
+      `QueryObjectTypes["${gqlFieldValueType.name}"]`,
+    );
+  }
+  if (gqlFieldValueType instanceof GraphQLInterfaceType) {
     fieldType = factory.createTypeReferenceNode(
       `QueryObjectTypes["${gqlFieldValueType.name}"]`,
     );

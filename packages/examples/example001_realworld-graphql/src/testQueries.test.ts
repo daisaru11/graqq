@@ -20,7 +20,9 @@ describe("queries", async () => {
       expectedQuery: `\
 query Viewer {
   viewer {
+    __typename
     user {
+      __typename
       id
       bio
     }
@@ -33,11 +35,15 @@ query Viewer {
       expectedQuery: `\
 query UserByUserName($uname: String!) {
   user(username: $uname) {
+    __typename
     id
     bio
     favoriteArticles {
+      __typename
       edges {
+        __typename
         node {
+          __typename
           id
           title
           createdAt

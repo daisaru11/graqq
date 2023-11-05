@@ -21,6 +21,7 @@ const testResultType: Assert<
   ResultOf<typeof mutation>,
   {
     mutationWithNonNullInputObjectArg: {
+      __typename: "ObjectB";
       field1: string | null;
     };
   }
@@ -36,6 +37,7 @@ const testVariablesType: Assert<
 export const expectedQuery = `\
 mutation TestMutation($arg1: InputObjectC!) {
   mutationWithNonNullInputObjectArg(arg: $arg1) {
+    __typename
     field1
   }
 }`;

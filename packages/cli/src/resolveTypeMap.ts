@@ -8,6 +8,7 @@ import {
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
+  GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
@@ -97,6 +98,25 @@ const resolveObjectTypeMap = (
     const objectProperty = factory.createPropertyAssignment(
       factory.createIdentifier(gqlObjectType.name),
       factory.createObjectLiteralExpression([], true),
+    );
+
+    return objectProperty;
+  }
+  if (gqlObjectType instanceof GraphQLInterfaceType) {
+    logger.debug(`${LOG_LABEL}: \tInterfaceType: ${gqlObjectType.name}`);
+
+    const fields: GraphQLFieldMap<
+      string,
+      GraphQLField<any, any>
+    > = gqlObjectType.getFields();
+
+    const fieldDeclarations = Object.values(fields)
+      .map(resolveObjectFieldTypeMap)
+      .filter((r): r is PropertyAssignment => !(r == null));
+
+    const objectProperty = factory.createPropertyAssignment(
+      factory.createIdentifier(gqlObjectType.name),
+      factory.createObjectLiteralExpression(fieldDeclarations, true),
     );
 
     return objectProperty;
@@ -291,6 +311,34 @@ const resolveType = (
         factory.createPropertyAssignment(
           factory.createIdentifier("type"),
           factory.createStringLiteral("Union"),
+        ),
+        factory.createPropertyAssignment(
+          factory.createIdentifier("typeName"),
+          factory.createStringLiteral(gqlType.name),
+        ),
+        factory.createPropertyAssignment(
+          factory.createIdentifier("nullable"),
+          nullable ? factory.createTrue() : factory.createFalse(),
+        ),
+        factory.createPropertyAssignment(
+          factory.createIdentifier("list"),
+          list ? factory.createTrue() : factory.createFalse(),
+        ),
+        factory.createPropertyAssignment(
+          factory.createIdentifier("listItemNullable"),
+          listItemNullable ? factory.createTrue() : factory.createFalse(),
+        ),
+      ],
+      true,
+    );
+  }
+
+  if (gqlType instanceof GraphQLInterfaceType) {
+    return factory.createObjectLiteralExpression(
+      [
+        factory.createPropertyAssignment(
+          factory.createIdentifier("type"),
+          factory.createStringLiteral("Interface"),
         ),
         factory.createPropertyAssignment(
           factory.createIdentifier("typeName"),

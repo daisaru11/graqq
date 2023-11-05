@@ -23,6 +23,7 @@ const testResultType: Assert<
   ResultOf<typeof mutation>,
   {
     mutationWithNonNullInputObjectArg: {
+      __typename: "ObjectB";
       field1: string | null;
     };
   }
@@ -33,6 +34,7 @@ mutation TestMutation {
   mutationWithNonNullInputObjectArg(
     arg: {field1: 5, field2: 1, field3: "test", field4: E1}
   ) {
+    __typename
     field1
   }
 }`;
