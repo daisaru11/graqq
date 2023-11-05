@@ -1,7 +1,5 @@
 # graqq | Write GraphQL queries in TypeScript
 
-🚧 WIP 🚧
-
 - Fully-Typed: You can construct GraphQL queries with the support of TypeScript's types.
 - Client-Agnostic: graqq just generates [TypedDocumentNode](https://github.com/dotansimha/graphql-typed-document-node). You can use any client libraries which support TypedDocumentNode.
 
